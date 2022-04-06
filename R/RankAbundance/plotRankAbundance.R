@@ -21,8 +21,8 @@ read.csv("Data/TLW_invertebrateDensity.csv") %>%
   tidyr::drop_na() %>%
   arrange(desc(TotalCount)) %>%
   ggplot(aes(x=reorder(Species, TotalCount), y=TotalCount)) + 
-  ylab("Species") + 
-  xlab("Total count (across replicates)") + 
+  xlab("Species") + 
+  ylab("Total count (across replicates)") + 
   geom_col() + 
   coord_flip() +
   theme_classic()
