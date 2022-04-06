@@ -4,13 +4,14 @@ library(ggplot2)
 
 ## The following function could be used as a part of a Shiny app.
 plotRankAbundance <- function(
+  datapath = "Data/TLW_invertebrateDensity.csv",
   select_catchment = "34L",    ## 31 & 34L most heavily deforested
   select_year      = 1998,     ## Harvesting operation: 1997
   select_month     = c("september", "june")   ## June or September
 )
 {
   # Load & filter to options selected above
-  df <- read.csv("Data/TLW_invertebrateDensity.csv") %>% 
+  df <- read.csv(datapath) %>% 
     filter(catchment == !! select_catchment, 
            year      == !! select_year, 
            month     == !! select_month) %>%

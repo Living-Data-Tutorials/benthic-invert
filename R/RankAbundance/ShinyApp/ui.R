@@ -10,7 +10,7 @@
 library(shiny)
 
 # Get options for year, season and catchment
-df = read.csv("Data/TLW_invertebrateDensity.csv")
+df = read.csv("../../../Data/TLW_invertebrateDensity.csv")
 year_options      = df %>% pull(year) %>% unique
 month_options     = df %>% pull(month) %>% unique
 catchment_options = df %>% pull(catchment) %>% unique
@@ -32,7 +32,7 @@ shinyUI(fluidPage(
 
         # Show a plot of the generated distribution
         mainPanel(
-            plotOutput("distPlot")
+            plotOutput("RankAbundPlot")
         )
     )
 ))
