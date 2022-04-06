@@ -3,7 +3,6 @@ library(dplyr)
 library(ggplot2)
 
 ## The following function could be used as a part of a Shiny app.
-
 plotRankAbundance <- function(
   select_catchment = "34L",    ## 31 & 34L most heavily deforested
   select_year      = 1998,     ## Harvesting operation: 1997
