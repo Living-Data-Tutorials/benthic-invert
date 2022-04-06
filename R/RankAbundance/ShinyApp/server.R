@@ -13,7 +13,10 @@ source("../plotRankAbundance.R")
 shinyServer(function(input, output) {
     output$RankAbundPlot <- renderPlot({
       plotRankAbundance(datapath = "../../../Data/TLW_invertebrateDensity.csv",
-                        select_year=input$year)
+                        select_catchment = input$catchment, 
+                        select_month = input$month,
+                        select_year=input$year, 
+                        log=input$log)
     })
 
 })
