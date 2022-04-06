@@ -9,6 +9,12 @@
 
 library(shiny)
 
+# Get options for year, season and catchment
+df = read.csv("Data/TLW_invertebrateDensity.csv")
+year_options      = df %>% pull(year) %>% unique
+month_options     = df %>% pull(month) %>% unique
+catchment_options = df %>% pull(catchment) %>% unique
+
 # Define UI for application that draws a histogram
 shinyUI(fluidPage(
 
