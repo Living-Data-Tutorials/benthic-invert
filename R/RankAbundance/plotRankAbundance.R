@@ -5,7 +5,7 @@ library(ggplot2)
 ## The following options could be part of a Shiny app.
 select_catchment = "34L"    ## 31 & 34L most heavily deforested
 select_year      = 1998     ## Harvesting operation: 1997
-select_month     = "june"   ## June or September
+select_month     = c("september", "june")   ## June or September
 
 
 # Load & filter to options selected above
@@ -16,7 +16,6 @@ df <- read.csv("Data/TLW_invertebrateDensity.csv") %>%
   # Tidy data for plotting
   tidyr::pivot_longer( "Aeshna":"Trichoptera", names_to = "Species", values_to = "Density" ) %>%
   mutate(
-    Count = na_if(Count, 0),
     Count = Density * 0.33) %>%
   group_by(Species) %>%
   summarise(TotalCount = sum(Count)) %>%
