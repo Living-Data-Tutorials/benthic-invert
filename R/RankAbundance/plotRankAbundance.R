@@ -19,9 +19,11 @@ plotRankAbundance <- function (
     # Tidy data for plotting
     tidyr::pivot_longer( "Aeshna":"Trichoptera", names_to = "Species", values_to = "Density" ) %>%
     mutate(
-      Count = Density * 0.33) %>%
+      Count = Density * 0.33, 
+      Count = tidyr::replace_na(Count, 0)) %>%
     group_by(Species) %>%
-    summarise(TotalCount = sum(Count)) %>%
+    summarise(
+      TotalCount = sum(Count)) %>%
     tidyr::drop_na() %>%
     arrange(desc(TotalCount)) 
   
