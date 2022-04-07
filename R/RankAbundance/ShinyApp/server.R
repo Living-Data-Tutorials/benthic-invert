@@ -9,10 +9,19 @@
 
 library(shiny)
 source("../plotRankAbundance.R")
+
+tidy_df = 
+  read.csv("../../../Data/TLW_invertebrateDensity.csv") %>%
+  tidyr::pivot_longer( "Aeshna":"Trichoptera", names_to = "Species", values_to = "Density" ) %>%
+  mutate(
+    Count = Density * 0.33, 
+    Count = tidyr::replace_na(Count, 0))
+
+
 # Define server logic required to draw a histogram
 shinyServer(function(input, output) {
     output$RankAbundPlot <- renderPlot({
-      plotRankAbundance(datapath = "../../../Data/TLW_invertebrateDensity.csv",
+      plotRankAbundance(df = tidy_df,
                         select_catchment = input$catchment, 
                         select_month = input$month,
                         select_year=input$year, 
