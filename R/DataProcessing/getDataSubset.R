@@ -20,5 +20,15 @@ NA_sp = df %>%
   select(Species)
 
 ## Remove those species from the dataset
-df %>% 
+df = df %>% 
   anti_join(NA_sp)
+
+## Check replicate consistency
+# df %>% group_by(catchment, year, Species) %>%
+#   summarise(n=sum(replicate)) %>%
+#   filter(n!=55)
+
+## All catchment/year/Species combos have exactly 10 replicates!
+
+
+
