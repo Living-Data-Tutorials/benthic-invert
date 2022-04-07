@@ -41,6 +41,8 @@ leaflet() %>%
 
 # Rank Abundance Curve
 
+One way to visualize biodiversity data is to make a Rank Abundance Curve. On the y-axis we have the abundance of each species, and species, ranked by abundance on the x-axis.
+
 
 
 # Species Richness
