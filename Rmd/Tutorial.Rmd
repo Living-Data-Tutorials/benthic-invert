@@ -24,9 +24,9 @@ Benthic invertebrates are small, often microscopic organisms (see Fig. 1), but f
 They can decompose terrestrial matter such as leaves, or consume periphyton growing on rocks within their streams.
 Benthic invertebrates can be a food source for aquatic animals, like small fish, or terrestrial animals such as fish.
 An experiment was conducted in 1997, where certain sampling sites experienced different levels of logging intensity.
-Due to their interaction with the terrestrial realm, we can expect that benthic invertebrate communities can be indirectly affected by logging
+Due to their interaction with the terrestrial realm, we can hypothesize that the biodiversity of benthic invertebrate communities might be affected by logging.
 
-![Fig. 1: Various benthic macroinvertebrates under a stereo microscope. Source: G. Carter via NOAA/GLERL](benthicmacroinvertebrates_g.carter_noaa.jpg)
+![Fig. 1: Various benthic macroinvertebrates under a stereo microscope. Source: G. Carter via NOAA/GLERL](benthicmacroinvertebrates_g.carter_noaa600px.jpg)
 
 
 
@@ -40,10 +40,10 @@ leaflet() %>%
 ```
 
 # Species Richness
-
+                                 
 Perhaps the simplest measure of biodiversity is species richness. 
 Simply count the number of species with an abundance greater than $0$.
 
-```{r exercise=T}
-# Exercise on calculating species richness?
+```{r exercise=T, include=T, echo=T}
+# Code or exercise on calculating species richness?
 ```
