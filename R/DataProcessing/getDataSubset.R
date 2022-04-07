@@ -3,6 +3,11 @@ library(dplyr)
 treatment = tibble(catchment =             c("34M",  "34U",    "34L"),
                    `Logging Intensity`   = c("none", "medium", "high"))
 
+yearAnnot = tibble(
+  year = 1995:2001,
+  trt  = c( rep("pre-logging", 2), "logging", rep("post-logging", 3))
+)
+
 # Make a smaller, more palatable version of the dataset
 df = read.csv("Data/TLW_invertebrateDensity.csv") %>%
   tidyr::pivot_longer( "Aeshna":"Trichoptera", names_to = "Species", values_to = "Density" ) %>%
@@ -12,7 +17,7 @@ df = read.csv("Data/TLW_invertebrateDensity.csv") %>%
   filter(year >= 1995, 
          year <= 2001, 
          # stringr::str_starts(catchment, stringr::fixed("34")), 
-         month=="june") %>%
+         month %in% c("june", "may")) %>%
   right_join(treatment)
 
 ## Find species that have 0 abudnance across all sites and years.
