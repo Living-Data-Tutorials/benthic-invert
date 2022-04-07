@@ -39,36 +39,80 @@ leaflet() %>%
 
 ```
 
-# Rank Abundance Curve
+# Why biodiversity matters 
 
-One way to visualize biodiversity data is to make a Rank Abundance Curve. On the y-axis we have the abundance of each species, and species, ranked by abundance on the x-axis.
+In an ever-changing world, as biologists, we are often concerned with how organisms will be able to cope with disturbances and increasingly, global climate change. We often think of biodiversity as an important buffer to withstanding these changes, as more diversity may mean more success in environments persisting beyond the change. It is the idea of survival of the fittest, but with more security in sheer numbers. 
 
 
+# Types of data typically collected
 
-# Species Richness
+Often times, biologists interested in collecting biodiversity data collect a standard set of responses. These often include:
+
+1. The different kinds of species in a given area or environment 
+2. The number of each of these species (abundance)
+3. Information about the area itself (i.e. habitat type, weather conditions, etc.)
+4. If the work involves an setting up an experiment, collecting the control vs. experimental groups as well as metrics for repeatability + statistical power (replicates)
+5. Of course, the time frame over which the data were collected
+
+# Different way to analyse this data :
+
+## Quantifying Species Richness
                                  
-Perhaps the simplest measure of biodiversity is species richness. 
-Simply count the number of species with an abundance greater than $0$.
+Perhaps the simplest measure of biodiversity is species richness ($S_r$). 
+
+We calculate species richness by simply counting the number of species in an area with an abundance greater than $0$.
+
+$$
+S_r = sum(\mathrm{abundance})
+$$
+
 
 ```{r exercise=T, include=T, echo=T}
+library(tidyverse)
 # Code or exercise on calculating species richness?
+#before 
+set.seed(2)
+data_2007 <- data.frame(
+  species = sample(1:20, 40, replace=2), 
+  abundance = sample(0:200, 40, replace=2), 
+  time= 2007, 
+  treatment=sample(c("control", "experiment"), 40, replace=2)
+)
+
+data_2018 <- data.frame(
+  species = sample(1:20, 40, replace=2), 
+  abundance = sample(0:200, 40, replace=2), 
+  time= 2018, 
+  treatment=sample(c("control", "experiment"), 40, replace=2)
+) 
+
+fake_data <- rbind(data_2007, data_2018) 
+
+#number of species 
+#species evenness
+
 ```
 
 
 
 
-# Shannon Index
+## Shannon Index
 
 
 
-# Evenness Index
+## Evenness Index
 
 
 
-# Community Stability
+## Community Stability
 
 
+# Ways we can convey all of this information in graphs 
 
+
+## Rank Abundance Curve
+
+One way to visualize biodiversity data is to make a Rank Abundance Curve. On the y-axis we have the abundance of each species, and species, ranked by abundance on the x-axis.
 
 
 
