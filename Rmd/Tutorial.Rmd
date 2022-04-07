@@ -1,0 +1,30 @@
+---
+title: 'So Many Species, So Little Time: Measuring Biodiversity'
+author: "Margaret Slein, Jory Griffiths, Egor Katkov"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(include = F, warning=F, message=F, echo=F)
+```
+
+
+
+Ecologists are often interested in the effects of perturbations (e.g. fires, logging, flooding or pollution) on biodiversity. 
+However, boiling biodiversity down to a single metric can be difficult.
+With the help of the Turkey lake dataset of benthic invertebrates [@Reference], we will present you with a number of common metrics, their meaning, and how they can be visualized with the help of a Rank-Abundance curves. 
+You will then have the option to learn to do it yourself using an R package called codyn.
+
+# The Data
+
+
+
+# Species Richness
+
+Perhaps the simplest measure of biodiversity is species richness. 
+Simply count the number of species with an abundance greater than $0$.
+
+```{r exercise=T}
+# Exercise on calculating species richness?
+```
