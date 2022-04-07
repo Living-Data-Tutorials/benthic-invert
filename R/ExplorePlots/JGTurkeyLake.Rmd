@@ -324,7 +324,7 @@ catchments <- inverts_long %>%
   summarise(count = sum(count))
 ```
 
-Now I will try to compare between them.
+Now I will try to compare between them. This is technically meant for paired samples but trying it.
 ```{r}
 abundance_difference(df=catchments, time.var="year", species.var="species", abundance.var="count", replicate.var="replicate")
 ```
