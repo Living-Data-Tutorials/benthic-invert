@@ -39,6 +39,10 @@ leaflet() %>%
 
 ```
 
+# Rank Abundance Curve
+
+
+
 # Species Richness
                                  
 Perhaps the simplest measure of biodiversity is species richness. 
@@ -47,3 +51,31 @@ Simply count the number of species with an abundance greater than $0$.
 ```{r exercise=T, include=T, echo=T}
 # Code or exercise on calculating species richness?
 ```
+
+
+
+
+# Shannon Index
+
+
+
+# Evenness Index
+
+
+
+# Community Stability
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
