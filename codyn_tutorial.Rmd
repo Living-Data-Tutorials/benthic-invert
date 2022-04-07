@@ -1,0 +1,71 @@
+---
+title: "codyn_tutorial"
+author: "Jory Griffith"
+date: "4/7/2022"
+output: html_document
+---
+
+Data loding a manipulation
+
+Filtering out the streams and months of interest.
+Converting to count data.
+```{r}
+pacman::p_load(codyn, tidyverse, patchwork, zoo)
+data  <- read_csv("Data/TLW_invertebrateDensity.csv") %>%
+  pivot_longer( "Aeshna":"Trichoptera", names_to = "species", values_to = "density") %>%
+  mutate(abundance = density * 0.33, 
+         treatment = case_when(catchment %in% c("33") ~ "low", 
+                               catchment %in% c("34U") ~ "medium", 
+                               catchment %in% c("34L") ~ "high", 
+                               catchment %in% c("34M") ~ "control", 
+                               TRUE ~ "natural"), 
+         date_yr_m = as.yearmon(paste0(year,month), "%Y %b")) %>%
+  drop_na(abundance) %>% 
+  filter(year >= 1995, 
+         year <= 2001, 
+         # stringr::str_starts(catchment, stringr::fixed("34")), 
+         month %in% c("june", "may"))
+```
+Creating different datasets for the high, low, medium, and reference streams. 
+```{r}
+# high
+subset_codyn_high <- data %>%
+  filter(treatment == "high") %>%
+  group_by(year, species, replicate) %>%
+  summarise(tot_abundance = sum(abundance))
+# med
+subset_codyn_med <- data %>%
+  filter(treatment == "medium") %>%
+  group_by(year, species, replicate) %>%
+  summarise(tot_abundance = sum(abundance))
+# low
+subset_codyn_low <- data %>%
+  filter(treatment == "low") %>%
+  group_by(year, species, replicate) %>%
+  summarise(tot_abundance = sum(abundance))
+# control
+subset_codyn_ctrl <- data %>%
+  filter(treatment=="control") %>%
+  group_by(year, species, replicate) %>%
+  summarise(tot_abundance = sum(abundance))
+```
+
+
+LESSON
+
+# Using `codyn` to analyze diversity data over time
+Ecologists are often interested in how diversity changes over time in one place. This is particularly interesting when you are looking at how species diversity responds to environmental change. This environmental change can be a single disturbance event such as a forest fire or more long-term change such as temperature increases due to climate change. The Turkey Lakes dataset provides us with an opportunity to look at how the diversity of benthic invertebrates changes over time and in response to logging. We can compare the diversity of different streams with different logging intensities and we can also compare the diversity of streams.
+
+HAVE A VISUAL SCHEMATIC OF BACI DESIGN
+
+The `codyn` package allows us to analyze the change in biodiversity over time using different metrics. MORE ABOUT THE CODYN PACKAGE.
+
+## Using `community_structure()` to calculate species richness
+`community_structure()` is a function in the package `codyn` that calculates species richness and evenness. 
+
+For example, we can use `community_structure()` to look at the change in species richness over time in one of the Turkey Lake streams. We will choose the stream with high logging intensity as an example.
+
+
+
+
+
