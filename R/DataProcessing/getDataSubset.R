@@ -24,9 +24,11 @@ df = df %>%
   anti_join(NA_sp)
 
 ## Check replicate consistency
-# df %>% group_by(catchment, year, Species) %>%
-#   summarise(n=sum(replicate)) %>%
-#   filter(n!=55)
+if( df %>% group_by(catchment, year, Species) %>%
+  summarise(n=sum(replicate)) %>%
+  filter(n!=55) %>% nrow){
+  warning("WARNING! Data contains missing replicates! -Egor")
+}
 
 ## All catchment/year/Species combos have exactly 10 replicates!
 
