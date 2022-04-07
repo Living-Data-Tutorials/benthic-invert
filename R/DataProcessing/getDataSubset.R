@@ -1,5 +1,7 @@
 library(dplyr)
 
+treatment = tibble(catchment =             c("34M",  "34U",    "34L"),
+                   `Logging Intensity`   = c("none", "medium", "high"))
 
 # Make a smaller, more palatable version of the dataset
 df = read.csv("Data/TLW_invertebrateDensity.csv") %>%
@@ -9,8 +11,9 @@ df = read.csv("Data/TLW_invertebrateDensity.csv") %>%
     Count = tidyr::replace_na(Count, 0)) %>%
   filter(year >= 1995, 
          year <= 2001, 
-         stringr::str_starts(catchment, stringr::fixed("34")), 
-         month=="june")
+         # stringr::str_starts(catchment, stringr::fixed("34")), 
+         month=="june") %>%
+  right_join(treatment)
 
 ## Find species that have 0 abudnance across all sites and years.
 NA_sp = df %>%
@@ -25,12 +28,13 @@ df = df %>%
 
 ## Check replicate consistency
 if( df %>% group_by(catchment, year, Species) %>%
-  summarise(n=sum(replicate)) %>%
-  filter(n!=55) %>% nrow){
+    summarise(n=sum(replicate)) %>%
+    filter(n!=55) %>% nrow){
   warning("WARNING! Data contains missing replicates! -Egor")
 }
 
-## All catchment/year/Species combos have exactly 10 replicates!
-
-
+## If no warning, we can sum across replicates
+df = df %>% group_by(`Logging Intensity`, year, Species) %>%
+  summarise(TotalCount=sum(Count))
+  
 
