@@ -338,15 +338,18 @@ ggplot_gtable(q) %>%
 
 ```
 
-TODO: Fit a model line to the plots? e.g. broken stick etc using https://search.r-project.org/CRAN/refmans/vegan/html/radfit.html
+### More models
 
+Several models have been developed to understand rank-abundance curves (e.g. log-normal, broken stick model). 
+The `radfit` function from the `vegan` `R` package allows fitting of these different curve models (see https://search.r-project.org/CRAN/refmans/vegan/html/radfit.html)
+
+
+# `codyn` tutorial
 
 ```{r setup2, include=FALSE, message=FALSE, warning=FALSE}
 knitr::opts_chunk$set(include = T, warning=F, message=F, echo=T)
 knitr::opts_knit$set(root.dir = "..")
 ```
-
-# `codyn` tutorial
 
 ## Load Packages
 We will be using the `codyn` package for this tutorial. We will also use `ggplot2` and `dplyr` for plotting and cleaning.
