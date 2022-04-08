@@ -331,7 +331,7 @@ ComparisonPlot +
   geom_smooth(method=lm, se=FALSE, data=dfRank)
 ```
 
-TODO: Fit a model line to the plots? e.g. broken stick etc.
+TODO: Fit a model line to the plots? e.g. broken stick etc using https://search.r-project.org/CRAN/refmans/vegan/html/radfit.html
 
 
 ```{r setup2, include=FALSE, message=FALSE, warning=FALSE}
