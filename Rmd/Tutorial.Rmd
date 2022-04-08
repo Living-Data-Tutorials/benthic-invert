@@ -255,17 +255,29 @@ Finally, instead of using bars to represent abundances, we can simply use a line
 
 ```{r}
 source("R/RankAbundance/plotRAC.R")
-ComarisonPlot <- sumOverReplicates() %>% 
-  filter(year==yr) %>%
+df <- rankSpecies() %>% 
+  filter(year==yr) 
+ComparisonPlot = df %>%
   plotRAC(facets = F) +  theme(legend.position = c(0.87,0.87))
 ComparisonPlot
 ```
 
-In the above plot, we can see which sites have the greatest species richness:
+In the above plot, we can compare species richness by comparing the maximum rank.
 
 ```{r}
+df %>% 
+  filter(TotalCount > 0) %>%
+  summarise(maxRank = max(Rank)) -> annotations
+
+annotations$xend = c(40, 31, 34)
+annotations$yend = rep(1, 3)
+annotations$x    = annotations$xend + 3
+annotations$y    = rep(5, 3)
 
 
+ComparisonPlot + 
+  geom_segment(data = annotations, aes(yend=yend, xend=xend, x=x, y=y), size=1.2, arrow = arrow(), show.legend = FALSE) + 
+  geom_text(data = annotations, aes(x = x+1, y=y+2, label=maxRank), size=6, show.legend = FALSE) 
 
 ```
 

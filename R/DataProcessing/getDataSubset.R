@@ -47,3 +47,11 @@ sumOverReplicates <- function(df = getDataSubset()) {
     summarise(TotalCount=sum(Count))
 }
 
+# Rank species by abundance
+rankSpecies <- function(df = sumOverReplicates()) {
+  df %>%
+    ungroup() %>%
+    group_by(year, catchment, month, `Logging Intensity`) %>%
+    arrange(desc(TotalCount), .by_group = T) %>%
+    mutate( Rank = seq_along(Species) )
+}

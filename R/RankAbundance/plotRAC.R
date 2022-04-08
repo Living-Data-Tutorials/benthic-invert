@@ -3,10 +3,6 @@ source("R/DataProcessing/getDataSubset.R")
 
 plotRAC <- function(df = sumOverReplicates, facets=T) {
   plot = df %>%
-    ungroup() %>%
-    group_by(year, `Logging Intensity`) %>%
-    arrange(desc(TotalCount), .by_group = T) %>%
-    mutate( Rank = seq_along(Species) ) %>%
     ggplot(aes(x=Rank, y=TotalCount, color=`Logging Intensity`)) + 
     xlab("Rank") + 
     ylab("log Total count (sum of replicates)") + 
