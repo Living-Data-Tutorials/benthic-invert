@@ -243,7 +243,10 @@ a / b
 
 We can see here between 2007 and 2018 in our simulated community, there were differences in absolute abundance as well as which species were dominant, which species disappeared, and which species were new. For instance, in 2007, species 2 was the third most abundant species, but it 2018, it was the most abundant species. However, species 3 is lost by 2018, while species 10 is gained in 2018. 
 
-## Rank abundance curves with Turkey lakes invertebrate data
+## Rank abundance curves with Turkey lakes invertebrate data  {.tabset}
+
+### Intro
+
 In contrast, RACs in nature are rarely as evenly distributed as the simulated data. 
 There is often few highly abundant species and many very rare species. 
 Below, you can see the rank-abundance distribution from one of the catchments in our Turkey Lakes benthic invertebrate dataset from the year following logging treatments (1998).
@@ -258,6 +261,9 @@ plotRankAbundance(log=F,
                   select_month     = c("june"))
 ```
 
+
+### Log
+
 To better visualize the distribution, the y-axis is typically log-transformed
 
 ```{r}
@@ -266,6 +272,8 @@ plotRankAbundance(log=T,
                   select_year      = c(yr,yr),     
                   select_month     = c("june"))
 ```
+
+### Rank
 
 Because most classic metrics of biodiversity do not take the species identity into account, we can drop species names from the x-axis, and simply refer to it's rank in the community. This is where the term **rank**-abundance comes from. 
 
@@ -278,6 +286,9 @@ plotRankAbundance(log=T,
                   SpName           = F)
 ```
 
+### Curve
+
+
 Finally, instead of using bars to represent abundances, we can simply use a lines to trace the distribution. This allows us to compare multiple distributions, in this case, from different three different sites with three levels of logging intensity.
 
 ```{r}
@@ -289,7 +300,9 @@ ComparisonPlot = df %>%
 ComparisonPlot
 ```
 
-In the above plot, we can compare species richness by comparing the maximum rank.
+### Species Richness
+
+We can compare species richness by comparing the maximum rank.
 
 ```{r}
 dfRank = df %>% 
@@ -307,6 +320,8 @@ ComparisonPlot +
 
 ```
 
+### Evenness
+
 The biodiversity metrics described (Shannon, Simpson, etc.) also incorporate community evenness, which can be thought of as the slope of rank-abundance curve. 
 For example, a community with one extremley dominant species with a rapid drop-off in species abundance will have a lower evennes than a community where more species are common.
 
@@ -315,12 +330,8 @@ ComparisonPlot +
   geom_smooth(method=lm, se=FALSE, data=dfRank)
 ```
 
-TODO: Show how biodiversity metrices (sp. richness, eveness) relate to the plot
 TODO: Fit a model line to the plots? e.g. broken stick etc.
 
-### NOTES 
-I got the equations from this paper: DOI:10.1007/s10531-016-1261-0
-All parameters/variables in the equations need to be defined! -Egor
 
 ```{r setup2, include=FALSE, message=FALSE, warning=FALSE}
 knitr::opts_chunk$set(include = T, warning=F, message=F, echo=T)
@@ -470,6 +481,11 @@ How do these patterns compare to the patterns of Shannon's diversity over time? 
 
 ## Activity
 Calculate richness, evenness, and diversity using both the Shannon and Simpson indices for the streams with low intensity logging, high intensity logging, and no logging. The data for these streams are `subset_codyn_low`, `subset_codyn_high`, and `subset_codyn_ctrl`. Plot these indices. Do you see any patterns across years? How do these compare to the patterns in the high intensity logging stream?
+
+# References 
+
+I got the equations from this paper: DOI:10.1007/s10531-016-1261-0
+
 
 
 
