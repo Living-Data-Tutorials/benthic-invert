@@ -50,7 +50,7 @@ plotRankAbundance <- function (
     ylab("Total count (sum of replicates)") + 
     # coord_flip() +
     theme_classic(base_size=16) +
-    theme(axis.text.x = element_text(face=ifelse(SpName, "italic", "plain"), angle=90))
+    theme(axis.text.x = element_text(face=ifelse(SpName, "italic", "plain"), size=9, angle=90))
   if(log) {
     plot = plot + scale_y_log10() + ylab("log Total count (sum of replicates)")
   }

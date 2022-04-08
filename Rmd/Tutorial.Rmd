@@ -218,14 +218,16 @@ We can see here between 2007 and 2018 in our simulated community, there were dif
 
 
 In contrast, RACs in nature are rarely as evenly distributed as the simulated data. 
-Indeed, there is often one or two highly abundant and a large number of very rare species. 
+There is often few highly abundant species and many very rare species. 
+Below, you can see the rank-abundance distribution from one of the catchments in our Turkey Lakes benthic invertebrate dataset from the year following logging treatments.
+
 
 ```{r}
 source("R/RankAbundance/plotRankAbundance.R")
-
+yr = 1998
 plotRankAbundance(log=F,
-                  select_catchment = "34L",     
-                  select_year      = c(1998,1998),     
+                  select_catchment = c("34M",  "34U",    "34L"),     
+                  select_year      = c(yr,yr),     
                   select_month     = c("june"))
 ```
 
@@ -233,8 +235,8 @@ To better visualize the distribution, the y-axis is typically log-transformed
 
 ```{r}
 plotRankAbundance(log=T,
-                  select_catchment = "34L",     
-                  select_year      = c(1998,1998),     
+                  select_catchment = c("34M",  "34U",    "34L"),     
+                  select_year      = c(yr,yr),     
                   select_month     = c("june"))
 ```
 
@@ -243,20 +245,31 @@ Because most classic metrics of biodiversity do not take the species identity in
 
 ```{r}
 plotRankAbundance(log=T,
-                  select_catchment = "34L",     
-                  select_year      = c(1998,1998),     
+                  select_catchment = c("34M",  "34U",    "34L"),     
+                  select_year      = c(yr,yr),     
                   select_month     = c("june"), 
                   SpName           = F)
 ```
 
-Finally, instead of using bars to represent abundances, we can simply use a lines to trace the distribution. This allows us to compare multiple distributions.
+Finally, instead of using bars to represent abundances, we can simply use a lines to trace the distribution. This allows us to compare multiple distributions, in this case, from different three different sites with three levels of logging intensity.
 
 ```{r}
 source("R/RankAbundance/plotRAC.R")
-sumOverReplicates() %>% 
-  filter(year=="2001") %>%
-  plotRAC(facets = F)
+ComarisonPlot <- sumOverReplicates() %>% 
+  filter(year==yr) %>%
+  plotRAC(facets = F) +  theme(legend.position = c(0.87,0.87))
+ComparisonPlot
 ```
+
+In the above plot, we can see which sites have the greatest species richness:
+
+```{r}
+
+
+
+```
+
+
 
 TODO: Show how biodiversity metrices (sp. richness, eveness) relate to the plot
 TODO: Fit a model line to the plots? e.g. broken stick etc.
