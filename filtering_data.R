@@ -22,7 +22,8 @@ data_sum<- data %>%
   summarise(abundance = sum(abundance))
 
 # write into csv
-write.csv(x=data_sum, file="stream_invertebrates.csv")
+write.csv(x=data_sum, file="stream_invertebrates.csv", row.names=FALSE)
+
 
 
 
