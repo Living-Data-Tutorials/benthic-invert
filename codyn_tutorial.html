@@ -253,14 +253,14 @@ div.tocify {
 
 <div id="load-packages" class="section level1">
 <h1>Load Packages</h1>
-<p>We will be using the <code>codyn</code> package for this tutorial. We will also use <code>ggplot2</code> and <code>tidyverse</code> for plotting and cleaning.</p>
+<p>We will be using the <code>codyn</code> package for this tutorial. We will also use <code>ggplot2</code> and <code>dplyr</code> for plotting and cleaning.</p>
 <pre class="r"><code>library(ggplot2)
 library(codyn)
-library(tidyverse)</code></pre>
+library(dplyr)</code></pre>
 </div>
 <div id="load-data" class="section level1">
 <h1>Load Data</h1>
-<p>These data are from the Turkey Lakes watershed experiment. EXPLAIN MORE.</p>
+<p>These data are from the Turkey Lakes watershed experiment. this dataset contains the abundances of benthic invertebrate species measured in the May and June from 1995 to 2001. They recorded the type and number of invertebrates in an area of the stream, with 10 replicates per sampling event. These forests next to these streams were logged in 1997 with varying harvest intensities, with low, medium, and high intensity harvest and a control stream with no forest harvest. We will using the <code>codyn</code> package to analyze the diversity of these benthic invertebrates over time.</p>
 <pre class="r"><code>data&lt;-read.csv(&quot;stream_invertebrates.csv&quot;)
 head(data)</code></pre>
 <pre><code>##   X year   species treatment replicate abundance
@@ -395,10 +395,10 @@ subset_codyn_ctrl &lt;- data %&gt;%
 <p>How do these patterns compare to the patterns of Shannon’s diversity over time? How do the values compare?</p>
 </div>
 </div>
-<div id="activity" class="section level2">
-<h2>Activity</h2>
-<p>Calculate richness, evenness, and diversity using both the Shannon and Simpson indices for the streams with low intensity logging, high intensity logging, and no logging. The data for these streams are <code>subset_codyn_low</code>, <code>subset_codyn_high</code>, and <code>subset_codyn_ctrl</code>. Plot these indices. Do you see any patterns across years? How do these compare to the patterns in the high intensity logging stream?</p>
 </div>
+<div id="activity" class="section level1">
+<h1>Activity</h1>
+<p>Calculate richness, evenness, and diversity using both the Shannon and Simpson indices for the streams with low intensity logging, high intensity logging, and no logging. The data for these streams are <code>subset_codyn_low</code>, <code>subset_codyn_high</code>, and <code>subset_codyn_ctrl</code>. Plot these indices. Do you see any patterns across years? How do these compare to the patterns in the high intensity logging stream?</p>
 </div>
 
 

@@ -9,16 +9,16 @@ output:
     toc_float: true
 ---
 # Load Packages
-We will be using the `codyn` package for this tutorial. We will also use `ggplot2` and `tidyverse` for plotting and cleaning.
+We will be using the `codyn` package for this tutorial. We will also use `ggplot2` and `dplyr` for plotting and cleaning.
 ```{r, message=FALSE, warning=FALSE}
 library(ggplot2)
 library(codyn)
-library(tidyverse)
+library(dplyr)
 ```
 
 
 # Load Data
-These data are from the Turkey Lakes watershed experiment. this dataset contains the abundances of benthic invertebrate species measured in the May and June from 1995 to 2001. They recorded the type and number of invertebrates in an area of the stream, with 10 replicates per sampling event. These forests next to these streams were logged in 1997 with varying harvest intensities, with low, medium, and high intensity harvest and a control stream with no forest harvest. We will using the `codyn` package to analyze the diversity of these benthic invertebrates over time. 
+These data are from the Turkey Lakes watershed experiment. This dataset contains the abundances of benthic invertebrate species measured in the May and June from 1995 to 2001. They recorded the type and number of invertebrates in an area of the stream, with 10 replicates per sampling event. These forests next to these streams were logged in 1997 with varying harvest intensities, with low, medium, and high intensity harvest and a control stream with no forest harvest. We will using the `codyn` package to analyze the diversity of these benthic invertebrates over time. 
 ```{r}
 data<-read.csv("stream_invertebrates.csv")
 head(data)
@@ -44,9 +44,7 @@ subset_codyn_ctrl <- data %>%
 # Using the `codyn` package to analyze diversity data over time
 Ecologists are often interested in how diversity changes over time in one place. This is particularly interesting when you are looking at how species diversity responds to environmental change. This environmental change can be a single disturbance event such as a forest fire or more long-term change such as temperature increases due to climate change. The Turkey Lakes dataset provides us with an opportunity to look at how the diversity of benthic invertebrates changes over time and in response to logging. We can compare the diversity of different streams with different logging intensities and we can also compare the diversity of streams.
 
-HAVE A VISUAL SCHEMATIC OF BACI DESIGN
-
-The `codyn` package allows us to analyze the change in biodiversity over time using different metrics. MORE ABOUT THE CODYN PACKAGE.
+The `codyn` package allows us to analyze the change in biodiversity over time using different metrics.
 
 # Using `community_structure()`
 `community_structure()` is a function in the package `codyn` that calculates species richness and evenness. 
@@ -54,7 +52,7 @@ The `codyn` package allows us to analyze the change in biodiversity over time us
 ## Species Richness and Evenness
 For example, we can use `community_structure()` to look at the change in species richness and evenness over time in one of the Turkey Lake streams. We will choose the stream with high logging intensity as an example. This function can only look at one stream at a time so make sure to subset out the stream that you are interested in.
 
-Let's take a look at this subset of the data.
+Let's take a look at the high intensity logging stream data.
 ```{r}
 head(subset_codyn_high)
 ```

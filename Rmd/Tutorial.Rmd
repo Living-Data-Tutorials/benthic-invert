@@ -2,14 +2,17 @@
 title: 'So Many Species, So Little Time: Measuring Biodiversity'
 author: "Margaret Slein, Jory Griffiths, Egor Katkov (Living Data Project)"
 date: "`r format(Sys.time(), '%d %B, %Y')`"
-output: html_document
+output: 
+  html_document:
+    toc: true
+    theme: united
+    toc_float: true
 ---
 
-```{r setup, include=FALSE}
+```{r setup, include=FALSE, message=FALSE, warning=FALSE}
 knitr::opts_chunk$set(include = T, warning=F, message=F, echo=F)
 knitr::opts_knit$set(root.dir = "..")
 ```
-
 
 
 Ecologists are often interested in the effects of perturbations (e.g. fires, logging, flooding or pollution) on biodiversity. 
@@ -31,7 +34,7 @@ Due to their interaction with the terrestrial realm, we can hypothesize that the
 
 
 
-```{r include=T}
+```{r include=T, message=FALSE, warning=FALSE}
 pacman::p_load(leaflet)
 
 leaflet() %>%
@@ -55,19 +58,14 @@ Often times, biologists interested in collecting biodiversity data collect a sta
 4. If the work involves an setting up an experiment, collecting the control vs. experimental groups as well as metrics for repeatability + statistical power (replicates)
 5. Of course, the time frame over which the data were collected
 
-# Different way to analyse this data :
+# Ways to calculate diversity {.tabset}
 
-Once we have collected our biodiversity data, there are several different ways to analyse and understand changes in community composition:
+Once we have collected our biodiversity data, there are several different ways to analyse and understand changes in community composition. Each of these metrics allow us to look at different aspects of the biodiversity data we collect.
 
+## Simulated Data
 
-## Quantifying Species Richness
-                                 
-Perhaps the simplest measure of biodiversity is species richness ($S$). 
-
-$S = \sum_{i=1}^{S}p_i^o$
-
-We can calculate species richness by simply counting the number of each in an area. 
-```{r}
+To explore these different diversity metrics and how they are calculated, we have simulated a biodiversity dataset with 10 unique species and random abundances across 3 years. This will allow us to look at how diversity changes over time.
+```{r, message=FALSE, warning=FALSE}
 pacman::p_load(tidyverse, patchwork)
 set.seed(222)
 sim1 <- data.frame(
@@ -87,9 +85,20 @@ sim3 <- data.frame(
 sim <- rbind(sim1, sim2, sim3)
 ```
 
-Using simulated data, we can think about the number of different species in a community may change over time. 
-
+Here is a look at this simulated data:
 ```{r}
+head(sim)
+```
+
+## Species Richness
+                                 
+Perhaps the simplest measure of biodiversity is species richness ($S$). 
+
+$S = \sum_{i=1}^{S}p_i^o$
+
+You can calculate the species richness for each year by counting the number of unique species recorded in that year. Then you can look at how the number of different species in a community changes over time. 
+
+```{r, message=FALSE, warning=FALSE}
 pacman::p_load(codyn, kableExtra)
 #table just showing the number of unique species
 #species richness calcs i used to manually enter below
@@ -97,11 +106,10 @@ richness_table <- sim %>%
   group_by(time) %>%
   summarise(richness=length(unique(species)))
 #we should probably make this into a nice looking kable?
-kable(richness_table)
+kable(richness_table, col.names=c("Year", "Richness"), align="c")
 ```
 
 We can see in this table that across years, the number of species in the same area fluctuated, some years with more species, other years with less. 
-
 
 ```{r}
 calc <- sim %>%
@@ -118,7 +126,7 @@ calc <- sim %>%
 
 ## Shannon-Wiener Index (H)
 
-Another metric we can use to analyse biodiversity is the Shannon-Wiener Index ($H$), which indexes across the sum of all relative proportions of species richness's with an additional logarithmic transformation. This equation uses both the number of species in a specific area (richness) and relative abundance (evenness). 
+Another metric we can use to analyze biodiversity is the Shannon-Wiener Index ($H$), which indexes across the sum of all relative proportions of species richness's with an additional logarithmic transformation. This equation uses both the number of species in a specific area (richness) and relative abundance (evenness). 
 
 $H' = - \sum_{i=1}^{S}p_ilnp_i$
 
@@ -126,7 +134,7 @@ $H' = - \sum_{i=1}^{S}p_ilnp_i$
 shannon<- calc %>%
   group_by(time) %>%
   summarise(mean(shannon))
-kable(shannon)
+kable(shannon, col.names=c("Year", "Shannon's Index"), align="c")
 ```
 
 From our simulated dataset, we can see that the Shannon diversity decreases over time, which suggests that we lost important species as time went on. 
@@ -143,7 +151,7 @@ $\gamma = - \sum_{i=1}^{S}p_i^2$
 simpson<-calc %>%
   group_by(time) %>%
   summarise(mean(simpson))
-kable(simpson)
+kable(simpson, col.names=c("Year", "Simpson's Index"), align="c")
 ```
 Interestingly, the Simpson index appears to increase ovee time -- which suggests biodiversity is increasing?
 
@@ -159,22 +167,17 @@ $E = H / ln(S)$
 evenness <- calc %>%
   group_by(time) %>%
   summarise(mean(evenness))
-kable(evenness)
+kable(evenness, col.names=c("Year", "Evenness"), align="c")
 ```
 
 In our simulated dataset, we can see that evenness is low from the start and decreases over time, suggesting that more species become increasingly dominant over time. 
 
-## Community Stability
 
-<> I am missing information on this calculation 
+# Visualizing species diversity
 
-# Ways we can convey all of this information in graphs 
-
-## Rank Abundance Curve
+## Rank abundance curves with simulated data
 
 One way to visualize biodiversity data is to make a Rank Abundance Curve (RAC). On the y-axis we have the abundance of each species, and species, ranked by abundance on the x-axis. Using RACs, we can visualize relative abundances, changes in species dominance, and overall changes in community composition with species loss and gain. 
-
-
 ```{r}
 library(tidyverse)
 # Code or exercise on calculating species richness?
@@ -201,14 +204,16 @@ a<- data %>%
   filter(time == 2007 ) %>%
 ggplot( aes(x=reorder(species, -abundance), y=abundance))+
   geom_point(size=4, colour="purple")+
-  ggtitle("2007")
+  ggtitle("2007")+
+  labs(x="Species", y="Abundance")
 
 #2007
 b<- data %>%
   filter(time == 2018 ) %>%
 ggplot( aes(x=reorder(species, -abundance), y=abundance))+
   geom_point(size=4, colour="blue")+
-  ggtitle("2018")
+  ggtitle("2018")+
+  labs(x="Species", y="Abundance")
 
 
 a / b
@@ -216,7 +221,7 @@ a / b
 
 We can see here between 2007 and 2018 in our simulated community, there were differences in absolute abundance as well as which species were dominant, which species disappeared, and which species were new. For instance, in 2007, species 2 was the third most abundant species, but it 2018, it was the most abundant species. However, species 3 is lost by 2018, while species 10 is gained in 2018. 
 
-
+## Rank abundance curves with Turkey lakes invertebrate data
 In contrast, RACs in nature are rarely as evenly distributed as the simulated data. 
 Indeed, there is often one or two highly abundant and a large number of very rare species. 
 
