@@ -39,7 +39,8 @@ pacman::p_load(leaflet)
 
 leaflet() %>%
   addTiles() %>%  # Add default OpenStreetMap map tiles
-  addMarkers(lng=-84.4110, lat=47.0515, popup="Turkey Lakes")
+  addMarkers(lng=-84.4110, lat=47.0515, popup="Turkey Lakes") %>%
+  setView(lng=-84.4110, lat=47.0515, zoom=2)
 
 ```
 Figure 2. Interactive map of the Turkey Lakes study site
