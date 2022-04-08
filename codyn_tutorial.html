@@ -251,63 +251,44 @@ div.tocify {
 </div>
 
 
-<p>Data loading and manipulation</p>
-<p>Filtering out the streams and months of interest. Converting to count data.</p>
-<pre class="r"><code>pacman::p_load(codyn, tidyverse, patchwork, zoo)
-data  &lt;- read_csv(&quot;Data/TLW_invertebrateDensity.csv&quot;) %&gt;%
-  pivot_longer( &quot;Aeshna&quot;:&quot;Trichoptera&quot;, names_to = &quot;species&quot;, values_to = &quot;density&quot;) %&gt;%
-  mutate(abundance = density * 0.33, 
-         treatment = case_when(catchment %in% c(&quot;33&quot;) ~ &quot;low&quot;, 
-                               catchment %in% c(&quot;34U&quot;) ~ &quot;medium&quot;, 
-                               catchment %in% c(&quot;34L&quot;) ~ &quot;high&quot;, 
-                               catchment %in% c(&quot;34M&quot;) ~ &quot;control&quot;, 
-                               TRUE ~ &quot;natural&quot;), 
-         date_yr_m = as.yearmon(paste0(year,month), &quot;%Y %b&quot;)) %&gt;%
-  drop_na(abundance) %&gt;% 
-  filter(year &gt;= 1995, 
-         year &lt;= 2001, 
-         # stringr::str_starts(catchment, stringr::fixed(&quot;34&quot;)), 
-         month %in% c(&quot;june&quot;, &quot;may&quot;))</code></pre>
-<pre><code>## Rows: 972 Columns: 97</code></pre>
-<pre><code>## ── Column specification ────────────────────────────────────────────────────────
-## Delimiter: &quot;,&quot;
-## chr  (2): catchment, month
-## dbl (95): year, replicate, Aeshna, Alloperla, Ameletus, Amphinemura, Antocha...</code></pre>
-<pre><code>## 
-## ℹ Use `spec()` to retrieve the full column specification for this data.
-## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
-<p>Creating different datasets for the high, low, medium, and reference streams.</p>
-<pre class="r"><code># high
+<div id="load-packages" class="section level1">
+<h1>Load Packages</h1>
+<p>We will be using the <code>codyn</code> package for this tutorial. We will also use <code>ggplot2</code> and <code>dplyr</code> for plotting and cleaning.</p>
+<pre class="r"><code>library(ggplot2)
+library(codyn)
+library(dplyr)</code></pre>
+</div>
+<div id="load-data" class="section level1">
+<h1>Load Data</h1>
+<p>These data are from the Turkey Lakes watershed experiment. this dataset contains the abundances of benthic invertebrate species measured in the May and June from 1995 to 2001. They recorded the type and number of invertebrates in an area of the stream, with 10 replicates per sampling event. These forests next to these streams were logged in 1997 with varying harvest intensities, with low, medium, and high intensity harvest and a control stream with no forest harvest. We will using the <code>codyn</code> package to analyze the diversity of these benthic invertebrates over time.</p>
+<pre class="r"><code>data&lt;-read.csv(&quot;stream_invertebrates.csv&quot;)
+head(data)</code></pre>
+<pre><code>##   X year   species treatment replicate abundance
+## 1 1 1995 Alloperla   control         1         0
+## 2 2 1995 Alloperla   control         2         0
+## 3 3 1995 Alloperla   control         3         4
+## 4 4 1995 Alloperla   control         4         3
+## 5 5 1995 Alloperla   control         5         3
+## 6 6 1995 Alloperla   control         6         3</code></pre>
+<p>For many functions, the <code>codyn</code> package can only look at data from one stream at a time. So first we will separate each stream into it’s own data frame.</p>
+<pre class="r"><code># high intensity logging treatment
 subset_codyn_high &lt;- data %&gt;%
-  filter(treatment == &quot;high&quot;) %&gt;%
-  group_by(year, species, replicate) %&gt;%
-  summarise(tot_abundance = sum(abundance))</code></pre>
-<pre><code>## `summarise()` has grouped output by &#39;year&#39;, &#39;species&#39;. You can override using the `.groups` argument.</code></pre>
-<pre class="r"><code># med
+  filter(treatment == &quot;high&quot;)
+# medium intensity logging treatment
 subset_codyn_med &lt;- data %&gt;%
-  filter(treatment == &quot;medium&quot;) %&gt;%
-  group_by(year, species, replicate) %&gt;%
-  summarise(tot_abundance = sum(abundance))</code></pre>
-<pre><code>## `summarise()` has grouped output by &#39;year&#39;, &#39;species&#39;. You can override using the `.groups` argument.</code></pre>
-<pre class="r"><code># low
+  filter(treatment == &quot;medium&quot;)
+# low intensity logging treatment
 subset_codyn_low &lt;- data %&gt;%
-  filter(treatment == &quot;low&quot;) %&gt;%
-  group_by(year, species, replicate) %&gt;%
-  summarise(tot_abundance = sum(abundance))</code></pre>
-<pre><code>## `summarise()` has grouped output by &#39;year&#39;, &#39;species&#39;. You can override using the `.groups` argument.</code></pre>
-<pre class="r"><code># control
+  filter(treatment == &quot;low&quot;) 
+# control stream (no logging)
 subset_codyn_ctrl &lt;- data %&gt;%
-  filter(treatment==&quot;control&quot;) %&gt;%
-  group_by(year, species, replicate) %&gt;%
-  summarise(tot_abundance = sum(abundance))</code></pre>
-<pre><code>## `summarise()` has grouped output by &#39;year&#39;, &#39;species&#39;. You can override using the `.groups` argument.</code></pre>
-<div id="using-codyn-to-analyze-diversity-data-over-time" class="section level1">
-<h1>Using <code>codyn</code> to analyze diversity data over time</h1>
+  filter(treatment==&quot;control&quot;)</code></pre>
+</div>
+<div id="using-the-codyn-package-to-analyze-diversity-data-over-time" class="section level1">
+<h1>Using the <code>codyn</code> package to analyze diversity data over time</h1>
 <p>Ecologists are often interested in how diversity changes over time in one place. This is particularly interesting when you are looking at how species diversity responds to environmental change. This environmental change can be a single disturbance event such as a forest fire or more long-term change such as temperature increases due to climate change. The Turkey Lakes dataset provides us with an opportunity to look at how the diversity of benthic invertebrates changes over time and in response to logging. We can compare the diversity of different streams with different logging intensities and we can also compare the diversity of streams.</p>
 <p>HAVE A VISUAL SCHEMATIC OF BACI DESIGN</p>
 <p>The <code>codyn</code> package allows us to analyze the change in biodiversity over time using different metrics. MORE ABOUT THE CODYN PACKAGE.</p>
-<p>First let’s load the codyn package. Remember to install if you have not.</p>
-<pre class="r"><code>library(codyn)</code></pre>
 </div>
 <div id="using-community_structure" class="section level1">
 <h1>Using <code>community_structure()</code></h1>
@@ -315,23 +296,19 @@ subset_codyn_ctrl &lt;- data %&gt;%
 <div id="species-richness-and-evenness" class="section level2">
 <h2>Species Richness and Evenness</h2>
 <p>For example, we can use <code>community_structure()</code> to look at the change in species richness and evenness over time in one of the Turkey Lake streams. We will choose the stream with high logging intensity as an example. This function can only look at one stream at a time so make sure to subset out the stream that you are interested in.</p>
-<p>Let’s take a look at this subset of the data. (probably make this into a table)</p>
+<p>Let’s take a look at this subset of the data.</p>
 <pre class="r"><code>head(subset_codyn_high)</code></pre>
-<pre><code>## # A tibble: 6 × 4
-## # Groups:   year, species [1]
-##    year species     replicate tot_abundance
-##   &lt;dbl&gt; &lt;chr&gt;           &lt;dbl&gt;         &lt;dbl&gt;
-## 1  1995 Amphinemura         1             9
-## 2  1995 Amphinemura         2            24
-## 3  1995 Amphinemura         3            53
-## 4  1995 Amphinemura         4            15
-## 5  1995 Amphinemura         5            59
-## 6  1995 Amphinemura         6            37</code></pre>
-<p>As you can see, there is a column for year, species, replicate, and total abundance (tot_abundance).</p>
-<p>The community structure function has five arguments. The first is <code>df</code> where you put in the data frame of interest, in our case <code>subset_codyn_high</code>. The <code>time.var</code> argument is where you put in your time variable (<code>year</code>), the abundance.var argument is where you put the column that holds the abundance variable (<code>tot_abundance</code>) and the <code>replicate.var</code> argument holds the column with the replicates (<code>replicate</code>). In the <code>metric</code> argument, you can specify the metric of evenness that you want the function to calculate. There are three possible metrics: <code>Evar</code>, <code>SimpsonEvenness</code>, and <code>EQ</code>, which all calculate evenness in different ways. We will use Simpson’s Evenness in this tutorial. Remember, if you ever need a refresher on the syntax of a function you can type <code>?community_structure</code> into the R script.</p>
-<pre class="r"><code>richness_high&lt;-community_structure(df=subset_codyn_high, time.var=&quot;year&quot;, abundance.var=&quot;tot_abundance&quot;, replicate.var=&quot;replicate&quot;,
-                                   metric=&quot;SimpsonEvenness&quot;)</code></pre>
-<p>Once we have fun this function, we can take a look at the output.</p>
+<pre><code>##    X year     species treatment replicate abundance
+## 1 31 1995 Amphinemura      high         1         9
+## 2 32 1995 Amphinemura      high         2        24
+## 3 33 1995 Amphinemura      high         3        53
+## 4 34 1995 Amphinemura      high         4        15
+## 5 35 1995 Amphinemura      high         5        59
+## 6 36 1995 Amphinemura      high         6        37</code></pre>
+<p>As you can see, there is a column for year, species, replicate, and abundance.</p>
+<p>The community structure function has five arguments. The first is <code>df</code> where you put in the data frame of interest, in our case <code>subset_codyn_high</code>. The <code>time.var</code> argument is where you put in your time variable (<code>year</code>), the abundance.var argument is where you put the column that holds the abundance variable (<code>abundance</code>) and the <code>replicate.var</code> argument holds the column with the replicates (<code>replicate</code>). In the <code>metric</code> argument, you can specify the metric of evenness that you want the function to calculate. There are three possible metrics: <code>Evar</code>, <code>SimpsonEvenness</code>, and <code>EQ</code>, which all calculate evenness in different ways. We will use Simpson’s Evenness in this tutorial. Remember, if you ever need a refresher on the syntax you can type <code>?community_structure</code> into the R script.</p>
+<pre class="r"><code>richness_high&lt;-community_structure(df=subset_codyn_high, time.var=&quot;year&quot;, abundance.var=&quot;abundance&quot;, replicate.var=&quot;replicate&quot;, metric=&quot;SimpsonEvenness&quot;)</code></pre>
+<p>We can take a look at the output.</p>
 <pre class="r"><code>head(richness_high)</code></pre>
 <pre><code>##   year replicate richness SimpsonEvenness
 ## 1 1995         1       17       0.2210248
@@ -340,7 +317,7 @@ subset_codyn_ctrl &lt;- data %&gt;%
 ## 4 1998         1       18       0.2786702
 ## 5 1999         1       15       0.3540228
 ## 6 2001         1       23       0.2661854</code></pre>
-<p>As you can see, this returns a data frame with the year, replicate, richness calculation, and evenness measure. It calculates richness and evenness separately for each replicate sample in the stream, so we have a measure of variability within samples and also variability across years.</p>
+<p>As you can see, this returns a data frame with the year, replicate, richness calculation, and evenness measure. It calculates richness and evenness separately for each replicate sample in the stream, so we have a measure of variability within samples as well as variability across years.</p>
 <div id="plot-species-richness" class="section level3">
 <h3>Plot species richness</h3>
 <p>We can plot this data frame to see the changes over time.</p>
@@ -369,10 +346,9 @@ subset_codyn_ctrl &lt;- data %&gt;%
 <h1>Using <code>community_diversity()</code></h1>
 <div id="shannons-diversity" class="section level2">
 <h2>Shannon’s diversity</h2>
-<p>Species richness and evenness are very simple ways to look at species diversity. However, as you learned from the rank abundance curves, species have different abundances within the community, with some species having very high abundance and most species having low abundance. Species richness does not take into account the relative abundances of each species, which limits the inferences we can make with it. The Shannon-Weiner diversity metric does take into account these relative abundances when calculating the diversity of a community and allows us to make more meaningful inferences about how biodiversity is changing over time.</p>
+<p>Species richness and evenness are very simple ways to look at species diversity. However, as you learned from the rank abundance curves, species have different abundances within the community, with some species having very high abundance and most species having low abundance. Species richness does not take into account the relative abundances of each species, which limits the inferences we can make. The Shannon-Weiner diversity metric does take into account these relative abundances when calculating the diversity of a community and allows us to make more meaningful inferences about how biodiversity is changing over time.</p>
 <p>The <code>codyn</code> package allows you to calculate the Shannon diversity index for a single site over time using the <code>community_diversity()</code> function. We will again use the data from the stream with the high logging intensity. Luckily, this function has the exact same syntax as the <code>community_structure()</code> function! The only difference is that the options for the <code>metric</code> argument are <code>Shannon</code> and <code>InverseSimpson</code>. We will first use <code>Shannon</code>.</p>
-<pre class="r"><code>shannon_div_high&lt;-community_diversity(df=subset_codyn_high, time.var=&quot;year&quot;, abundance.var=&quot;tot_abundance&quot;,
-                                      replicate.var=&quot;replicate&quot;, metric=&quot;Shannon&quot;)</code></pre>
+<pre class="r"><code>shannon_div_high&lt;-community_diversity(df=subset_codyn_high, time.var=&quot;year&quot;, abundance.var=&quot;abundance&quot;, replicate.var=&quot;replicate&quot;, metric=&quot;Shannon&quot;)</code></pre>
 <p>Let’s take a look at the output for this function.</p>
 <pre class="r"><code>head(shannon_div_high)</code></pre>
 <pre><code>##   year replicate  Shannon
@@ -397,8 +373,7 @@ subset_codyn_ctrl &lt;- data %&gt;%
 <div id="simpsons-diversity" class="section level2">
 <h2>Simpson’s diversity</h2>
 <p>We can also use the same function to calculate Simpson’s diversity by simply changing the <code>metric</code> argument to <code>InverseSimpson</code>.</p>
-<pre class="r"><code>simpson_div_high&lt;-community_diversity(df=subset_codyn_high, time.var=&quot;year&quot;, abundance.var=&quot;tot_abundance&quot;,
-                                      replicate.var=&quot;replicate&quot;, metric=&quot;InverseSimpson&quot;)</code></pre>
+<pre class="r"><code>simpson_div_high&lt;-community_diversity(df=subset_codyn_high, time.var=&quot;year&quot;, abundance.var=&quot;abundance&quot;, replicate.var=&quot;replicate&quot;, metric=&quot;InverseSimpson&quot;)</code></pre>
 <p>We can look at the output.</p>
 <pre class="r"><code>head(simpson_div_high)</code></pre>
 <pre><code>##   year replicate InverseSimpson
@@ -420,10 +395,10 @@ subset_codyn_ctrl &lt;- data %&gt;%
 <p>How do these patterns compare to the patterns of Shannon’s diversity over time? How do the values compare?</p>
 </div>
 </div>
-<div id="activity" class="section level2">
-<h2>Activity</h2>
-<p>Calculate richness, evenness, and diversity using both the Shannon and Simpson indices for the stream with low intensity logging. The data for this stream is <code>subset_codyn_low</code>. Plot these indices. Do you see any patterns across years? How do these compare to the patterns in the high intensity logging stream?</p>
 </div>
+<div id="activity" class="section level1">
+<h1>Activity</h1>
+<p>Calculate richness, evenness, and diversity using both the Shannon and Simpson indices for the streams with low intensity logging, high intensity logging, and no logging. The data for these streams are <code>subset_codyn_low</code>, <code>subset_codyn_high</code>, and <code>subset_codyn_ctrl</code>. Plot these indices. Do you see any patterns across years? How do these compare to the patterns in the high intensity logging stream?</p>
 </div>
 
 
