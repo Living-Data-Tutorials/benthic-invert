@@ -324,11 +324,17 @@ ComparisonPlot +
 ### Evenness
 
 The biodiversity metrics described (Shannon, Simpson, etc.) also incorporate community evenness, which can be thought of as the slope of rank-abundance curve. 
-For example, a community with one extremley dominant species with a rapid drop-off in species abundance will have a lower evennes than a community where more species are common.
+For example, a community with one very dominant species and a rapid drop-off in species abundance will have a lower evenness than a community where more species are common.
 
 ```{r}
-ComparisonPlot + 
-  geom_smooth(method=lm, se=FALSE, data=dfRank)
+q = {ComparisonPlot +  geom_smooth(method=lm, se=FALSE, data=dfRank) }%>%
+  ggplot_build()
+q$data[[1]]$alpha = 0.5
+
+ggplot_gtable(q) %>% 
+  plot 
+
+
 ```
 
 TODO: Fit a model line to the plots? e.g. broken stick etc using https://search.r-project.org/CRAN/refmans/vegan/html/radfit.html
