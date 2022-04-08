@@ -7,6 +7,7 @@ output: html_document
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(include = T, warning=F, message=F, echo=F)
+knitr::opts_knit$set(root.dir = "..")
 ```
 
 
@@ -216,14 +217,50 @@ a / b
 We can see here between 2007 and 2018 in our simulated community, there were differences in absolute abundance as well as which species were dominant, which species disappeared, and which species were new. For instance, in 2007, species 2 was the third most abundant species, but it 2018, it was the most abundant species. However, species 3 is lost by 2018, while species 10 is gained in 2018. 
 
 
+In contrast, RACs in nature are rarely as evenly distributed as the simulated data. 
+Indeed, there is often one or two highly abundant and a large number of very rare species. 
+
+```{r}
+source("R/RankAbundance/plotRankAbundance.R")
+
+plotRankAbundance(log=F,
+                  select_catchment = "34L",     
+                  select_year      = c(1998,1998),     
+                  select_month     = c("june"))
+```
+
+To better visualize the distribution, the y-axis is typically log-transformed
+
+```{r}
+plotRankAbundance(log=T,
+                  select_catchment = "34L",     
+                  select_year      = c(1998,1998),     
+                  select_month     = c("june"))
+```
+
+Because most classic metrics of biodiversity do not take the species identity into account, we can drop species names from the x-axis, and simply refer to it's rank in the community. This is where the term **rank**-abundance comes from. 
 
 
+```{r}
+plotRankAbundance(log=T,
+                  select_catchment = "34L",     
+                  select_year      = c(1998,1998),     
+                  select_month     = c("june"), 
+                  SpName           = F)
+```
 
+Finally, instead of using bars to represent abundances, we can simply use a lines to trace the distribution. This allows us to compare multiple distributions.
 
+```{r}
+source("R/RankAbundance/plotRAC.R")
+sumOverReplicates() %>% 
+  filter(year=="2001") %>%
+  plotRAC(facets = F)
+```
 
-
-
+TODO: Show how biodiversity metrices (sp. richness, eveness) relate to the plot
+TODO: Fit a model line to the plots? e.g. broken stick etc.
 
 ### NOTES 
 I got the equations from this paper: DOI:10.1007/s10531-016-1261-0
-
+All parameters/variables in the equations need to be defined! -Egor
