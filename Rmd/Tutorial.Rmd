@@ -270,8 +270,8 @@ TODO: Fit a model line to the plots? e.g. broken stick etc.
 I got the equations from this paper: DOI:10.1007/s10531-016-1261-0
 All parameters/variables in the equations need to be defined! -Egor
 
-```{r setup, include=FALSE, message=FALSE, warning=FALSE}
-knitr::opts_chunk$set(include = T, warning=F, message=F, echo=F)
+```{r setup2, include=FALSE, message=FALSE, warning=FALSE}
+knitr::opts_chunk$set(include = T, warning=F, message=F, echo=T)
 knitr::opts_knit$set(root.dir = "..")
 ```
 
