@@ -42,6 +42,8 @@ leaflet() %>%
   addMarkers(lng=-84.4110, lat=47.0515, popup="Turkey Lakes")
 
 ```
+Figure 2. Interactive map of the Turkey Lakes study site
+
 
 # Why biodiversity matters 
 
@@ -58,14 +60,10 @@ Often times, biologists interested in collecting biodiversity data collect a sta
 4. If the work involves an setting up an experiment, collecting the control vs. experimental groups as well as metrics for repeatability + statistical power (replicates)
 5. Of course, the time frame over which the data were collected
 
-# Ways to calculate diversity {.tabset}
+# Our simulated data
 
-Once we have collected our biodiversity data, there are several different ways to analyse and understand changes in community composition. Each of these metrics allow us to look at different aspects of the biodiversity data we collect.
-
-## Simulated Data
-
-To explore these different diversity metrics and how they are calculated, we have simulated a biodiversity dataset with 10 unique species and random abundances across 3 years. This will allow us to look at how diversity changes over time.
-```{r, message=FALSE, warning=FALSE}
+Here is a look at this simulated data:
+```{r}
 pacman::p_load(tidyverse, patchwork)
 set.seed(222)
 sim1 <- data.frame(
@@ -83,12 +81,14 @@ sim3 <- data.frame(
   abundance = sample(0:200, 20, replace=2), 
   time= 2020)
 sim <- rbind(sim1, sim2, sim3)
-```
-
-Here is a look at this simulated data:
-```{r}
 head(sim)
 ```
+
+# Ways to calculate diversity {.tabset}
+
+Once we have collected our biodiversity data, there are several different ways to analyse and understand changes in community composition. Each of these metrics allow us to look at different aspects of the biodiversity data we collect.
+
+To explore these different diversity metrics and how they are calculated, we have simulated a biodiversity dataset with 10 unique species and random abundances across 3 years. This will allow us to look at how diversity changes over time.
 
 ## Species Richness
                                  
@@ -106,21 +106,20 @@ richness_table <- sim %>%
   group_by(time) %>%
   summarise(richness=length(unique(species)))
 #we should probably make this into a nice looking kable?
-kable(richness_table, col.names=c("Year", "Richness"), align="c")
+kable(richness_table, col.names=c("Year", "Richness"), align="c")%>%
+  kable_classic(full_width = F, html_font = "Cambria")
 ```
 
 We can see in this table that across years, the number of species in the same area fluctuated, some years with more species, other years with less. 
 
 ```{r}
-calc <- sim %>%
+shannon <- sim %>%
   group_by(time, species) %>%
   summarise(n=n()) %>%
   mutate(richness= case_when(time %in% c("2001", "2009") ~ 9, 
                              TRUE~ 7), 
     prop = n/sum(n),
-    shannon= sum(prop/log(prop)), 
-    evenness = shannon/log(richness),
-    simpson = sum((prop)^2)) %>%
+    shannon= sum(prop/log(prop))) %>%
   as.data.frame()
 ```
 
@@ -130,11 +129,17 @@ Another metric we can use to analyze biodiversity is the Shannon-Wiener Index ($
 
 $H' = - \sum_{i=1}^{S}p_ilnp_i$
 
+
 ```{r}
-shannon<- calc %>%
-  group_by(time) %>%
-  summarise(mean(shannon))
-kable(shannon, col.names=c("Year", "Shannon's Index"), align="c")
+shannon<-  sim %>%
+    group_by(time, species) %>%
+    summarise(n=n()) %>%
+    mutate(prop = n/sum(n),
+    shannon= sum(prop/log(prop))) %>%
+    summarise(shannon = mean(shannon))
+
+kable(shannon, col.names=c("Year", "Shannon's Index"), align="c")%>%
+  kable_classic(full_width = F, html_font = "Cambria")
 ```
 
 From our simulated dataset, we can see that the Shannon diversity decreases over time, which suggests that we lost important species as time went on. 
@@ -147,11 +152,18 @@ Another metric we can use to analyse biodiversity in the Simpson's index ($D$) w
 
 $\gamma = - \sum_{i=1}^{S}p_i^2$
 
+
+
 ```{r}
-simpson<-calc %>%
-  group_by(time) %>%
-  summarise(mean(simpson))
-kable(simpson, col.names=c("Year", "Simpson's Index"), align="c")
+simpson<-  sim %>%
+    group_by(time, species) %>%
+    summarise(n=n()) %>%
+    mutate(prop = n/sum(n),
+    simpson = sum((prop)^2)) %>%
+    summarise(simpson = mean(simpson))
+
+kable(simpson, col.names=c("Year", "Simpson's Index"), align="c")%>%
+  kable_classic(full_width = F, html_font = "Cambria")
 ```
 Interestingly, the Simpson index appears to increase ovee time -- which suggests biodiversity is increasing?
 
@@ -163,11 +175,21 @@ Additionally, we can think about the evenness of species across a given area. Ev
 
 $E = H / ln(S)$
 
+
+
 ```{r}
-evenness <- calc %>%
-  group_by(time) %>%
-  summarise(mean(evenness))
-kable(evenness, col.names=c("Year", "Evenness"), align="c")
+evenness<-  sim %>%
+    group_by(time, species) %>%
+    summarise(n=n()) %>%
+    mutate(richness= case_when(time %in% c("2001", "2009") ~ 9, 
+                             TRUE~ 7),
+           prop = n/sum(n),
+    shannon= sum(prop/log(prop)), 
+    evenness = shannon/log(richness)) %>%
+    summarise(evenness = mean(evenness))
+
+kable(evenness, col.names=c("Year", "Evenness"), align="c")%>%
+  kable_classic(full_width = F, html_font = "Cambria")
 ```
 
 In our simulated dataset, we can see that evenness is low from the start and decreases over time, suggesting that more species become increasingly dominant over time. 
