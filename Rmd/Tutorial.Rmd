@@ -56,48 +56,74 @@ Often times, biologists interested in collecting biodiversity data collect a sta
 
 # Different way to analyse this data :
 
+Once we have collected our biodiversity data, there are several different ways to analyse and understand changes in community composition:
+
+
 ## Quantifying Species Richness
                                  
-Perhaps the simplest measure of biodiversity is species richness ($S_r$). 
+Perhaps the simplest measure of biodiversity is species richness ($S$). 
 
-We calculate species richness by simply counting the number of species in an area with an abundance greater than $0$.
-
-$$
-S_r = sum(\mathrm{abundance})
-$$
+$S = \sum_{i=1}^{S}p_i^o$
 
 
-```{r exercise=T, include=T, echo=T}
-library(tidyverse)
-# Code or exercise on calculating species richness?
-#before 
-set.seed(2)
-data_2007 <- data.frame(
-  species = sample(1:20, 40, replace=2), 
-  abundance = sample(0:200, 40, replace=2), 
-  time= 2007, 
-  treatment=sample(c("control", "experiment"), 40, replace=2)
-)
+We calculate species richness by simply counting the number of each in an area. 
+```{r}
+pacman::p_load(tidyverse, patchwork)
+set.seed(222)
+sim1 <- data.frame(
+  species = sample(1:10, 20, replace=2), 
+  abundance = sample(0:200, 20, replace=2), 
+  time= 2001)
+set.seed(723)
+sim2 <- data.frame(
+  species = sample(1:10, 20, replace=2), 
+  abundance = sample(0:200, 20, replace=2), 
+  time= 2009)
+set.seed(117)
+sim3 <- data.frame(
+  species = sample(1:7, 20, replace=2), 
+  abundance = sample(0:200, 20, replace=2), 
+  time= 2020)
+sim <- rbind(sim1, sim2, sim3)
+```
 
-data_2018 <- data.frame(
-  species = sample(1:20, 40, replace=2), 
-  abundance = sample(0:200, 40, replace=2), 
-  time= 2018, 
-  treatment=sample(c("control", "experiment"), 40, replace=2)
-) 
+Using simulated data, we can think about the number of different species in a community may change over time. 
 
-fake_data <- rbind(data_2007, data_2018) 
+```{r}
+#table just showing the number of unique species
+richness_table <- sim %>%
+  group_by(time) %>%
+  summarise(richness=length(unique(species)))
+#we should probably make this into a nice looking kable?
+print(richness_table)
 
-#number of species 
-#species evenness
+sim %>%
+  group_by(time, species) %>%
+  summarise(n=n(), 
+            prop = n/sum(n))
+
+
+            freq = richness/sum(n)) %>%
+  mutate(), 
+            p_i = species/length(species)
+            shannon = richness/ln(richness),
+            simpson = )
+
+
+
+sum(sim$n)
 
 ```
 
+We can see in this table that across years, the number of species in the same area fluctuated, some years with more species, other years with less. 
 
+## Shannon-Wiener Index
 
+$H' = - \sum_{i=1}^{S}p_ilnp_i$
 
-## Shannon Index
+## Simpson's Index 
 
+$\gamma = - \sum_{i=1}^{S}p_i^2$
 
 
 ## Evenness Index
@@ -112,7 +138,47 @@ fake_data <- rbind(data_2007, data_2018)
 
 ## Rank Abundance Curve
 
-One way to visualize biodiversity data is to make a Rank Abundance Curve. On the y-axis we have the abundance of each species, and species, ranked by abundance on the x-axis.
+One way to visualize biodiversity data is to make a Rank Abundance Curve (RAC). On the y-axis we have the abundance of each species, and species, ranked by abundance on the x-axis. Using RACs, we can visualize relative abundances, changes in species dominance, and overall changes in community composition with species loss and gain. 
+
+
+```{r}
+library(tidyverse)
+# Code or exercise on calculating species richness?
+#before 
+pacman::p_load(tidyverse, patchwork)
+set.seed(2)
+data_2007 <- data.frame(
+  species = sample(1:10, 20, replace=2), 
+  abundance = sample(0:200, 20, replace=2), 
+  time= 2007)
+
+data_2018 <- data.frame(
+  species = sample(1:10, 20, replace=2), 
+  abundance = sample(0:200, 20, replace=2), 
+  time= 2018) 
+
+data <- rbind(data_2007, data_2018) %>%
+  group_by(species, time) %>%
+  summarise(abundance= sum(abundance))
+
+
+#2007
+a<- data %>%
+  filter(time == 2007 ) %>%
+ggplot( aes(x=reorder(species, -abundance), y=abundance))+
+  geom_point(size=4, colour="purple")+
+  ggtitle("2007")
+
+#2007
+b<- data %>%
+  filter(time == 2018 ) %>%
+ggplot( aes(x=reorder(species, -abundance), y=abundance))+
+  geom_point(size=4, colour="blue")+
+  ggtitle("2018")
+a/b
+```
+
+We can see here between 2007 and 2018 in our simulated community, there were differences in absolute abundance as well as which species were dominant, which species disappeared, and which species were new. For instance, in 2007, species 2 was the third most abundant species, but it 2018, it was the most abundant species. However, species 3 is lost by 2018, while species 10 is gained in 2018. 
 
 
 
@@ -123,5 +189,6 @@ One way to visualize biodiversity data is to make a Rank Abundance Curve. On the
 
 
 
-
+### NOTES 
+I got the equations from this paper: DOI:10.1007/s10531-016-1261-0
 
