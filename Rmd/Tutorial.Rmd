@@ -325,6 +325,7 @@ ComparisonPlot +
 
 The biodiversity metrics described (Shannon, Simpson, etc.) also incorporate community evenness, which can be thought of as the slope of rank-abundance curve. 
 For example, a community with one very dominant species and a rapid drop-off in species abundance will have a lower evenness than a community where more species are common.
+In the plot below, the community at the site of "medium" logging (organge) is less even than the other two since it has a steeper average slope.
 
 ```{r}
 q = {ComparisonPlot +  geom_smooth(method=lm, se=FALSE, data=dfRank) }%>%
