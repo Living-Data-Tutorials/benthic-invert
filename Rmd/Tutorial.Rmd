@@ -31,7 +31,7 @@ Due to their interaction with the terrestrial realm, we can hypothesize that the
 
 
 ```{r include=T}
-library(leaflet)
+pacman::p_load(leaflet)
 
 leaflet() %>%
   addTiles() %>%  # Add default OpenStreetMap map tiles
@@ -65,8 +65,7 @@ Perhaps the simplest measure of biodiversity is species richness ($S$).
 
 $S = \sum_{i=1}^{S}p_i^o$
 
-
-We calculate species richness by simply counting the number of each in an area. 
+We can calculate species richness by simply counting the number of each in an area. 
 ```{r}
 pacman::p_load(tidyverse, patchwork)
 set.seed(222)
@@ -90,51 +89,85 @@ sim <- rbind(sim1, sim2, sim3)
 Using simulated data, we can think about the number of different species in a community may change over time. 
 
 ```{r}
+pacman::p_load(codyn, kableExtra)
 #table just showing the number of unique species
+#species richness calcs i used to manually enter below
 richness_table <- sim %>%
   group_by(time) %>%
   summarise(richness=length(unique(species)))
 #we should probably make this into a nice looking kable?
-print(richness_table)
-
-sim %>%
-  group_by(time, species) %>%
-  summarise(n=n(), 
-            prop = n/sum(n))
-
-
-            freq = richness/sum(n)) %>%
-  mutate(), 
-            p_i = species/length(species)
-            shannon = richness/ln(richness),
-            simpson = )
-
-
-
-sum(sim$n)
-
+kable(richness_table)
 ```
 
 We can see in this table that across years, the number of species in the same area fluctuated, some years with more species, other years with less. 
 
-## Shannon-Wiener Index
+
+```{r}
+calc <- sim %>%
+  group_by(time, species) %>%
+  summarise(n=n()) %>%
+  mutate(richness= case_when(time %in% c("2001", "2009") ~ 9, 
+                             TRUE~ 7), 
+    prop = n/sum(n),
+    shannon= sum(prop/log(prop)), 
+    evenness = shannon/log(richness),
+    simpson = sum((prop)^2)) %>%
+  as.data.frame()
+```
+
+## Shannon-Wiener Index (H)
+
+Another metric we can use to analyse biodiversity is the Shannon-Wiener Index ($H$), which indexes across the sum of all relative proportions of species richness's with an additional logarithmic transformation. This equation uses both the number of species in a specific area (richness) and relative abundance (evenness). 
 
 $H' = - \sum_{i=1}^{S}p_ilnp_i$
 
-## Simpson's Index 
+```{r}
+shannon<- calc %>%
+  group_by(time) %>%
+  summarise(mean(shannon))
+kable(shannon)
+```
+
+From our simulated dataset, we can see that the Shannon diversity decreases over time, which suggests that we lost important species as time went on. 
+
+
+## Simpson's Index (D)
+
+Another metric we can use to analyse biodiversity in the Simpson's index ($D$) which indexes across the sum of all relative proportions of species's richness with an additional square power transformation. This equation. Though very similar to the calculation in the Shannon-Wiener Index, the Simpson index is more focused on dominance of species as it highlights the proportion of species in a sample.
+
 
 $\gamma = - \sum_{i=1}^{S}p_i^2$
 
+```{r}
+simpson<-calc %>%
+  group_by(time) %>%
+  summarise(mean(simpson))
+kable(simpson)
+```
+Interestingly, the Simpson index appears to increase ovee time -- which suggests biodiversity is increasing?
 
-## Evenness Index
+<> This definitely needs more interpretation
 
+## Evenness Index (E)
 
+Additionally, we can think about the evenness of species across a given area. Evenness is a metric for assessing species dominance, if evenness is high, it means most species are of equal dominance. If evenness if low, it means some species are more dominance than others
+
+$E = H / ln(S)$
+
+```{r}
+evenness <- calc %>%
+  group_by(time) %>%
+  summarise(mean(evenness))
+kable(evenness)
+```
+
+In our simulated dataset, we can see that evenness is low from the start and decreases over time, suggesting that more species become increasingly dominant over time. 
 
 ## Community Stability
 
+<> I am missing information on this calculation 
 
 # Ways we can convey all of this information in graphs 
-
 
 ## Rank Abundance Curve
 
@@ -175,7 +208,9 @@ b<- data %>%
 ggplot( aes(x=reorder(species, -abundance), y=abundance))+
   geom_point(size=4, colour="blue")+
   ggtitle("2018")
-a/b
+
+
+a / b
 ```
 
 We can see here between 2007 and 2018 in our simulated community, there were differences in absolute abundance as well as which species were dominant, which species disappeared, and which species were new. For instance, in 2007, species 2 was the third most abundant species, but it 2018, it was the most abundant species. However, species 3 is lost by 2018, while species 10 is gained in 2018. 
