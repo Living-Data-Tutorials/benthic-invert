@@ -224,7 +224,7 @@ We can see here between 2007 and 2018 in our simulated community, there were dif
 ## Rank abundance curves with Turkey lakes invertebrate data
 In contrast, RACs in nature are rarely as evenly distributed as the simulated data. 
 There is often few highly abundant species and many very rare species. 
-Below, you can see the rank-abundance distribution from one of the catchments in our Turkey Lakes benthic invertebrate dataset from the year following logging treatments.
+Below, you can see the rank-abundance distribution from one of the catchments in our Turkey Lakes benthic invertebrate dataset from the year following logging treatments (1998).
 
 
 ```{r}
@@ -270,15 +270,14 @@ ComparisonPlot
 In the above plot, we can compare species richness by comparing the maximum rank.
 
 ```{r}
-df %>% 
-  filter(TotalCount > 0) %>%
-  summarise(maxRank = max(Rank)) -> annotations
+dfRank = df %>% 
+  filter(TotalCount > 0)
+annotations = dfRank %>% summarise(maxRank = max(Rank))
 
 annotations$xend = c(40, 31, 34)
 annotations$yend = rep(1, 3)
 annotations$x    = annotations$xend + 3
 annotations$y    = rep(5, 3)
-
 
 ComparisonPlot + 
   geom_segment(data = annotations, aes(yend=yend, xend=xend, x=x, y=y), size=1.2, arrow = arrow(), show.legend = FALSE) + 
@@ -286,7 +285,13 @@ ComparisonPlot +
 
 ```
 
+The biodiversity metrics described (Shannon, Simpson, etc.) also incorporate community evenness, which can be thought of as the slope of rank-abundance curve. 
+For example, a community with one extremley dominant species with a rapid drop-off in species abundance will have a lower evennes than a community where more species are common.
 
+```{r}
+ComparisonPlot + 
+  geom_smooth(method=lm, se=FALSE, data=dfRank)
+```
 
 TODO: Show how biodiversity metrices (sp. richness, eveness) relate to the plot
 TODO: Fit a model line to the plots? e.g. broken stick etc.
