@@ -27,8 +27,8 @@ From 1995 to 2009, scientists collected, identified and counted benthic inverteb
 Benthic invertebrates are small, often microscopic organisms (see Fig. 1), but form an important link between aquatic and terrestrial habitats . 
 They can decompose terrestrial matter such as leaves, or consume periphyton growing on rocks within their streams.
 Benthic invertebrates can be a food source for aquatic animals, like small fish, or terrestrial animals such as fish.
-An experiment was conducted in 1997, where certain sampling sites experienced different levels of logging intensity.
-Due to their interaction with the terrestrial realm, we can hypothesize that the biodiversity of benthic invertebrate communities might be affected by logging.
+An experiment was conducted in 1997, where the forests next to the sampling sites were logged with differing intensities.
+Streamside logging affects many stream variables such as temperature, light exposure, leaf litter deposition, and algae growth. Because benthic invertebrates are affected by these variables, we can hypothesize that the biodiversity of benthic invertebrate communities might be affected by logging.
 
 ![Fig. 1: Various benthic macroinvertebrates under a stereo microscope. Source: G. Carter via NOAA/GLERL](benthicmacroinvertebrates_g.carter_noaa600px.jpg)
 
