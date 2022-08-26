@@ -10,7 +10,7 @@ output:
 ---
 
 ```{r setup, include=FALSE, message=FALSE, warning=FALSE}
-knitr::opts_chunk$set(include = T, warning=F, message=F, echo=F)
+knitr::opts_chunk$set(include = T, warning=F, message=F, echo=T)
 knitr::opts_knit$set(root.dir = "..")
 ```
 
@@ -23,15 +23,19 @@ You will then have the option to learn to do it yourself using an R package call
 # The Data
 
 The Turkey Lakes Watershed Study (see map) is an initiative by several agencies of the government of Canada, initially designed to study the effects of acid rain on forest ecosystems.
+
 From 1995 to 2009, scientists collected, identified and counted benthic invertebrates from various stream beds around the Turkey Lakes catchment. 
+
 Benthic invertebrates are small, often microscopic organisms (see Fig. 1), but form an important link between aquatic and terrestrial habitats . 
+
 They can decompose terrestrial matter such as leaves, or consume periphyton growing on rocks within their streams.
 Benthic invertebrates can be a food source for aquatic animals, like small fish, or terrestrial animals such as fish.
+
 An experiment was conducted in 1997, where the forests next to the sampling sites were logged with differing intensities.
+
 Streamside logging affects many stream variables such as temperature, light exposure, leaf litter deposition, and algae growth. Because benthic invertebrates are affected by these variables, we can hypothesize that the biodiversity of benthic invertebrate communities might be affected by logging.
 
 ![Fig. 1: Various benthic macroinvertebrates under a stereo microscope. Source: G. Carter via NOAA/GLERL](benthicmacroinvertebrates_g.carter_noaa600px.jpg)
-
 
 
 ```{r include=T, message=FALSE, warning=FALSE}
@@ -44,7 +48,6 @@ leaflet() %>%
 
 ```
 Figure 2. Interactive map of the Turkey Lakes study site
-
 
 # Why biodiversity matters 
 
@@ -87,7 +90,7 @@ head(sim)
 
 # Ways to calculate diversity {.tabset}
 
-Once we have collected our biodiversity data, there are several different ways to analyse and understand changes in community composition. Each of these metrics allow us to look at different aspects of the biodiversity data we collect.
+Once we have collected our biodiversity data, there are several different ways to analyze and understand changes in community composition. Each of these metrics allow us to look at different aspects of the biodiversity data we collect.
 
 To explore these different diversity metrics and how they are calculated, we have simulated a biodiversity dataset with 10 unique species and random abundances across 3 years. This will allow us to look at how diversity changes over time.
 
@@ -101,13 +104,13 @@ You can calculate the species richness for each year by counting the number of u
 
 ```{r, message=FALSE, warning=FALSE}
 pacman::p_load(codyn, kableExtra)
-#table just showing the number of unique species
-#species richness calcs i used to manually enter below
+# Table showing the number of unique species
+# Species richness calculation
 richness_table <- sim %>%
   group_by(time) %>%
   summarise(richness=length(unique(species)))
-#we should probably make this into a nice looking kable?
-kable(richness_table, col.names=c("Year", "Richness"), align="c")%>%
+
+kable(richness_table, col.names=c("Year", "Richness"), align="c") %>%
   kable_classic(full_width = F, html_font = "Cambria")
 ```
 
@@ -120,7 +123,7 @@ shannon <- sim %>%
   mutate(richness= case_when(time %in% c("2001", "2009") ~ 9, 
                              TRUE~ 7), 
     prop = n/sum(n),
-    shannon= sum(prop/log(prop))) %>%
+    shannon= sum(prop/log(prop))) %>% 
   as.data.frame()
 ```
 
@@ -136,7 +139,7 @@ shannon<-  sim %>%
     group_by(time, species) %>%
     summarise(n=n()) %>%
     mutate(prop = n/sum(n),
-    shannon= sum(prop/log(prop))) %>%
+    shannon= sum(prop/log(prop))) %>% # Calculate Shannon's index
     summarise(shannon = mean(shannon))
 
 kable(shannon, col.names=c("Year", "Shannon's Index"), align="c")%>%
@@ -161,22 +164,18 @@ simpson<-  sim %>%
     summarise(n=n()) %>%
     mutate(prop = n/sum(n),
     simpson = sum((prop)^2)) %>%
-    summarise(simpson = mean(simpson))
+    summarise(simpson = mean(simpson)) # Calculate Simpson's index
 
 kable(simpson, col.names=c("Year", "Simpson's Index"), align="c")%>%
   kable_classic(full_width = F, html_font = "Cambria")
 ```
-Interestingly, the Simpson index appears to increase ovee time -- which suggests biodiversity is increasing?
-
-<> This definitely needs more interpretation
+Interestingly, the Simpson index appears to increase over time. This is likely because Simpson's index weights the more dominant species higher, so the value can actually increase even when biodiversity is decreasing.
 
 ## Evenness Index (E)
 
 Additionally, we can think about the evenness of species across a given area. Evenness is a metric for assessing species dominance, if evenness is high, it means most species are of equal dominance. If evenness if low, it means some species are more dominance than others
 
 $E = H / ln(S)$
-
-
 
 ```{r}
 evenness<-  sim %>%
