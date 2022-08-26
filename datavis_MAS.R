@@ -184,6 +184,9 @@ ggplot()+
  labs(title="Rate of change by treatment")
 # because the rate of change can go into negtives it does not really make sense to find the average over streams
 
+
+
+
 ########## Calculating richness and evenness using a specified metric for a replicate ##############
 ?community_structure
 # can calculate richness and simpson's evenness
