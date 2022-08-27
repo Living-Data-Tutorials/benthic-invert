@@ -62,7 +62,7 @@ Often times, biologists interested in collecting biodiversity data collect a sta
 2. The number of each of these species (abundance)
 3. Information about the area itself (i.e. habitat type, weather conditions, etc.)
 4. If the work involves an setting up an experiment, collecting the control vs. experimental groups as well as metrics for repeatability + statistical power (replicates)
-5. Of course, the time frame over which the data were collected
+5. Of course, the time frame over which the data were collected.
 
 # Our simulated data
 
