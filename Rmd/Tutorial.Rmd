@@ -33,7 +33,7 @@ Benthic invertebrates can be a food source for aquatic animals, like small fish,
 
 An experiment was conducted in 1997, where the forests next to the sampling sites were logged with differing intensities.
 
-Streamside logging affects many stream variables such as temperature, light exposure, leaf litter deposition, and algae growth. Because benthic invertebrates are affected by these variables, we can hypothesize that the biodiversity of benthic invertebrate communities might be affected by logging.
+Streamside logging affects many stream variables such as temperature, light exposure, leaf litter deposition, and algae growth. Because benthic invertebrates are affected by these variables, we can hypothesize that the biodiversity of benthic invertebrate communities might be affected by logging. 
 
 ![Fig. 1: Various benthic macroinvertebrates under a stereo microscope. Source: G. Carter via NOAA/GLERL](benthicmacroinvertebrates_g.carter_noaa600px.jpg)
 
